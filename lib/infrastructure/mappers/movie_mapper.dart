@@ -5,7 +5,7 @@ class MovieMapper {
   static Movie movieDbToEntity(MovieFromMovieDb movieDb) => Movie(
       adult: movieDb.adult,
       backdropPath: movieDb.backdropPath != ''
-          ? '​https://image.tmdb.org/t/p/w500${movieDb.backdropPath}'
+          ? 'https://image.tmdb.org/t/p/original${movieDb.backdropPath}'
           : 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Image-not-found.png',
       genreIds: movieDb.genreIds.map((e) => e.toString()).toList(),
       id: movieDb.id,
