@@ -1,5 +1,7 @@
+import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_carousel_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
+import 'package:cinemapedia/presentation/widgets/movies/movies_billboard.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_carousel.dart';
 import 'package:cinemapedia/presentation/widgets/shared/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -36,12 +38,27 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final nowPlayingMovies = ref.watch(moviesCarouselProvider);
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const CircularProgressIndicator();
 
-    if (nowPlayingMovies.isEmpty) return CircularProgressIndicator();
+    final carouselMovies = ref.watch(moviesCarouselProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
-    return Column(
-      children: [MoviesCarousel(movies: nowPlayingMovies)],
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+            delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return Column(
+              children: [
+                MoviesCarousel(movies: carouselMovies),
+                MoviesBillboard(movies: nowPlayingMovies),
+              ],
+            );
+          },
+          childCount: 1,
+        ))
+      ],
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class MoviesCarousel extends StatefulWidget {
   final List<Movie> movies;
@@ -18,8 +17,10 @@ class _MoviesCarouselState extends State<MoviesCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
     return Column(
-      spacing: 20,
+      spacing: 10,
       children: [
         CarouselSlider.builder(
           carouselController: controller,
@@ -57,8 +58,8 @@ class _MoviesCarouselState extends State<MoviesCarousel> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: currentMovie == index
-                        ? Colors.grey.shade600
-                        : Colors.grey.shade300,
+                        ? colors.primary
+                        : colors.inversePrimary,
                   ),
                 ),
               );
@@ -98,12 +99,9 @@ class _Slide extends StatelessWidget {
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress != null) {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Skeletonizer(
-                enabled: true,
-                child: Container(
-                  color: Colors.grey[300],
-                ),
+              borderRadius: BorderRadius.circular(10.0),
+              child: Container(
+                color: Colors.grey.shade300,
               ),
             );
           }
