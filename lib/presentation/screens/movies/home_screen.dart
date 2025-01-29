@@ -44,21 +44,17 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final carouselMovies = ref.watch(moviesCarouselProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-            delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return Column(
-              children: [
-                MoviesCarousel(movies: carouselMovies),
-                MoviesBillboard(movies: nowPlayingMovies),
-              ],
-            );
-          },
-          childCount: 1,
-        ))
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          MoviesCarousel(movies: carouselMovies),
+          MoviesBillboard(
+            movies: nowPlayingMovies,
+            loadNextPage: () =>
+                ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+          ),
+        ],
+      ),
     );
   }
 }

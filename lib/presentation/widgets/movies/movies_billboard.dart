@@ -2,10 +2,39 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MoviesBillboard extends StatelessWidget {
+class MoviesBillboard extends StatefulWidget {
   final List<Movie> movies;
+  final VoidCallback? loadNextPage;
 
-  const MoviesBillboard({super.key, required this.movies});
+  const MoviesBillboard({super.key, required this.movies, this.loadNextPage});
+
+  @override
+  State<MoviesBillboard> createState() => _MoviesBillboardState();
+}
+
+class _MoviesBillboardState extends State<MoviesBillboard> {
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController.addListener(() {
+      if (widget.loadNextPage == null) return;
+
+      if ((scrollController.position.pixels + 200) >=
+          scrollController.position.maxScrollExtent) {
+        widget.loadNextPage!();
+        // print(widget.movies.length);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +66,12 @@ class MoviesBillboard extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: movies.length,
+                controller: scrollController,
+                itemCount: widget.movies.length,
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final movie = movies[index];
+                  final movie = widget.movies[index];
 
                   return _Slide(movie: movie);
                 },
