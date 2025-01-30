@@ -1,6 +1,7 @@
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class MoviesHorizontalList extends StatefulWidget {
@@ -123,7 +124,7 @@ class _SlideState extends State<_Slide> {
         ),
         clipBehavior: Clip.hardEdge,
         child: InkWell(
-          onTap: () {},
+          onTap: () => context.push('/movie/${widget.movie.id}'),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
