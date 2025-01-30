@@ -40,6 +40,7 @@ class _MoviesCarouselState extends State<MoviesCarousel> {
             final movie = widget.movies[index];
             return _Slide(
               movie: movie,
+              colors: colors,
             );
           },
         ),
@@ -73,8 +74,9 @@ class _MoviesCarouselState extends State<MoviesCarousel> {
 
 class _Slide extends StatelessWidget {
   final Movie movie;
+  final ColorScheme colors;
 
-  const _Slide({required this.movie});
+  const _Slide({required this.movie, required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,7 @@ class _Slide extends StatelessWidget {
       borderRadius: BorderRadius.circular(20.0),
       boxShadow: [
         BoxShadow(
-          color: Colors.black38,
+          color: colors.inversePrimary,
           blurRadius: 6.0,
           offset: Offset(0, 4),
           spreadRadius: 1.0,
@@ -101,7 +103,7 @@ class _Slide extends StatelessWidget {
             return ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Container(
-                color: Colors.grey.shade300,
+                color: colors.primary,
               ),
             );
           }

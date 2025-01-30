@@ -1,6 +1,7 @@
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MoviesHorizontalList extends StatefulWidget {
   final List<Movie> movies;
@@ -79,9 +80,7 @@ class _MoviesHorizontalListState extends State<MoviesHorizontalList> {
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final movie = widget.movies[index];
-
-                  return _Slide(movie: movie);
+                  return _Slide(movie: widget.movies[index]);
                 },
               ),
             )
@@ -92,76 +91,99 @@ class _MoviesHorizontalListState extends State<MoviesHorizontalList> {
   }
 }
 
-class _Slide extends StatelessWidget {
+class _Slide extends StatefulWidget {
   final Movie movie;
 
   const _Slide({required this.movie});
 
   @override
+  State<_Slide> createState() => _SlideState();
+}
+
+class _SlideState extends State<_Slide> {
+  bool isLoading = true;
+
+  void disableSkeleton() {
+    if (!mounted) return; // Evitar errores si el widget ya no está en pantalla
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
 
-    return Card(
-      elevation: 3.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          SizedBox(
-            width: 150,
-            height: 200,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Image.network(
-                movie.posterPath,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress != null) {
-                    return Container(
-                      width: 150,
-                      color: Colors.grey.shade300,
-                    );
-                  }
-                  return child;
-                },
-              ),
-            ),
-          ),
-
-          // Title
-          SizedBox(
-            width: 150,
-            child: Text(
-              movie.title,
-              style: textStyle.titleSmall,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Rating
-          SizedBox(
-            width: 150,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.star_half,
-                  color: Colors.yellow.shade800,
-                ),
-                Text(
-                  HumanFormats.number(movie.voteAverage),
-                  style: textStyle.bodyMedium?.copyWith(
-                    color: Colors.yellow.shade800,
+    return Skeletonizer(
+      enabled: isLoading,
+      child: Card(
+        elevation: 3.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: () {},
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(
+                width: 150,
+                height: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image.network(
+                    widget.movie.posterPath,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        Future.delayed(
+                            Duration(seconds: 3), () => disableSkeleton());
+                        return child;
+                      }
+                      return Container(
+                        width: 150,
+                        height: 200,
+                        color: Colors.grey.shade300,
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
-          )
-        ],
+              ),
+
+              // Title
+              SizedBox(
+                width: 150,
+                child: Text(
+                  widget.movie.title,
+                  style: textStyle.titleSmall,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              // Rating
+              SizedBox(
+                width: 150,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.star_half,
+                      color: Colors.yellow.shade800,
+                    ),
+                    Text(
+                      HumanFormats.number(widget.movie.voteAverage),
+                      style: textStyle.bodyMedium?.copyWith(
+                        color: Colors.yellow.shade800,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
