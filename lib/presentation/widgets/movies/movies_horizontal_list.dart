@@ -2,17 +2,25 @@ import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
-class MoviesBillboard extends StatefulWidget {
+class MoviesHorizontalList extends StatefulWidget {
   final List<Movie> movies;
+  final String title;
+  final String subTitle;
   final VoidCallback? loadNextPage;
 
-  const MoviesBillboard({super.key, required this.movies, this.loadNextPage});
+  const MoviesHorizontalList({
+    super.key,
+    required this.movies,
+    this.loadNextPage,
+    required this.title,
+    required this.subTitle,
+  });
 
   @override
-  State<MoviesBillboard> createState() => _MoviesBillboardState();
+  State<MoviesHorizontalList> createState() => _MoviesHorizontalListState();
 }
 
-class _MoviesBillboardState extends State<MoviesBillboard> {
+class _MoviesHorizontalListState extends State<MoviesHorizontalList> {
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -39,7 +47,6 @@ class _MoviesBillboardState extends State<MoviesBillboard> {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
-    final DateTime dateToday = DateTime.now();
 
     return SizedBox(
       height: 350,
@@ -51,17 +58,18 @@ class _MoviesBillboardState extends State<MoviesBillboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "On Billboard",
+                  widget.title,
                   style: textStyle.titleLarge,
                 ),
-                FilledButton.tonal(
-                  onPressed: () {},
-                  style: ButtonStyle(visualDensity: VisualDensity.compact),
-                  child: Text(
-                    HumanFormats.date(dateToday),
-                    style: textStyle.bodyMedium,
-                  ),
-                )
+                if (widget.subTitle.isNotEmpty)
+                  FilledButton.tonal(
+                    onPressed: () {},
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    child: Text(
+                      widget.subTitle,
+                      style: textStyle.bodyMedium,
+                    ),
+                  )
               ],
             ),
             Expanded(

@@ -1,7 +1,8 @@
+import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_carousel_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
-import 'package:cinemapedia/presentation/widgets/movies/movies_billboard.dart';
+import 'package:cinemapedia/presentation/widgets/movies/movies_horizontal_list.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_carousel.dart';
 import 'package:cinemapedia/presentation/widgets/shared/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   void initState() {
     super.initState();
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
   }
 
   @override
@@ -43,15 +45,27 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     final carouselMovies = ref.watch(moviesCarouselProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+
+    final DateTime dateToday = DateTime.now();
 
     return SingleChildScrollView(
       child: Column(
         children: [
           MoviesCarousel(movies: carouselMovies),
-          MoviesBillboard(
+          MoviesHorizontalList(
+            title: "On Billboard",
+            subTitle: HumanFormats.date(dateToday),
             movies: nowPlayingMovies,
             loadNextPage: () =>
                 ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+          ),
+          MoviesHorizontalList(
+            title: "Coming Soon",
+            subTitle: "",
+            movies: upcomingMovies,
+            loadNextPage: () =>
+                ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
           ),
         ],
       ),
