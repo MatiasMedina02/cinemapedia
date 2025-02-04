@@ -139,10 +139,13 @@ class _MovieDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
+          // Title
           Text(
             movie.title,
             style: textStyle.titleLarge,
           ),
+
+          // Genres
           Wrap(
             spacing: 4.0,
             children: movie.genreIds.map(
@@ -159,9 +162,29 @@ class _MovieDetails extends StatelessWidget {
               },
             ).toList(),
           ),
+
+          // Actors
           _ActorsByMovie(
             movieId: movie.id.toString(),
+            textStyle: textStyle,
           ),
+
+          // Description
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Description",
+                style: textStyle.titleLarge,
+              ),
+              Text(
+                movie.overview,
+                style: textStyle.bodyMedium,
+              ),
+            ],
+
+            // TODO: More Like This
+          )
         ],
       ),
     );
@@ -170,8 +193,12 @@ class _MovieDetails extends StatelessWidget {
 
 class _ActorsByMovie extends ConsumerWidget {
   final String movieId;
+  final TextTheme textStyle;
 
-  const _ActorsByMovie({required this.movieId});
+  const _ActorsByMovie({
+    required this.movieId,
+    required this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -179,40 +206,48 @@ class _ActorsByMovie extends ConsumerWidget {
         ref.watch(actorsByMovieProvider)[movieId];
 
     if (actorsByMovie == null) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     }
 
     return SizedBox(
-      height: 400,
+      height: 250,
       child: ListView.builder(
         itemCount: actorsByMovie.length,
         scrollDirection: Axis.horizontal,
+        physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           final actor = actorsByMovie[index];
 
-          return Container(
-            width: 150,
-            padding: EdgeInsets.all(8.0),
+          return SizedBox(
+            width: 125,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4.0,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    actor.profilePath,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
+                  child: Image.network(actor.profilePath,
+                      height: 150, width: 100, fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress != null) {
                       return Container(
                         width: 150,
-                        height: 200,
                         color: Colors.grey.shade300,
                       );
-                    },
+                    }
+                    return child;
+                  }),
+                ),
+                Text(
+                  actor.name,
+                  style: textStyle.bodySmall,
+                ),
+                Text(
+                  actor.character ?? '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(actor.name),
               ],
             ),
           );

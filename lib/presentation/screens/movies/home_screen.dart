@@ -4,6 +4,7 @@ import 'package:cinemapedia/presentation/providers/movies/movie_carousel_provide
 import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_horizontal_list.dart';
 import 'package:cinemapedia/presentation/widgets/movies/movies_carousel.dart';
+import 'package:cinemapedia/presentation/widgets/shared/custom_appbar.dart';
 import 'package:cinemapedia/presentation/widgets/shared/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,9 +15,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Screen"),
-      ),
+      appBar: CustomAppBar(),
       body: Center(
         child: _HomeView(),
       ),
