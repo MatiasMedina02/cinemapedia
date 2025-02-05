@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +107,8 @@ class _MovieItem extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
 
-    return Padding(
+    return Container(
+      height: 120,
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
         onTap: () => context.push('/movie/${movie.id}'),
@@ -117,7 +119,18 @@ class _MovieItem extends StatelessWidget {
               width: size.width * 0.2,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(movie.posterPath),
+                child: CachedNetworkImage(
+                  imageUrl: movie.posterPath,
+                  placeholder: (context, url) => SizedBox(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                    color: Colors.red.shade600,
+                  ),
+                ),
               ),
             ),
             SizedBox(
