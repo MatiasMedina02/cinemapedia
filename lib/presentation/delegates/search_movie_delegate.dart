@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +9,29 @@ typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMovies;
+  final StreamController<List<Movie>> debouncedMovies =
+      StreamController.broadcast();
+  final List<Movie> _cachedMovies = [];
+  Timer? _debounceTimer;
 
   SearchMovieDelegate({required this.searchMovies});
+
+  void _onQueryChanged(String query) {
+    if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
+
+    _debounceTimer = Timer(Duration(milliseconds: 500), () async {
+      if (query.isEmpty) {
+        debouncedMovies.add([]);
+        return;
+      }
+
+      final movies = await searchMovies(query);
+      _cachedMovies
+        ..clear()
+        ..addAll(movies);
+      debouncedMovies.add(movies);
+    });
+  }
 
   @override
   String get searchFieldLabel => "Buscar película";
@@ -27,20 +50,36 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      onPressed: () => close(context, null),
+      onPressed: () {
+        debouncedMovies.close();
+        close(context, null);
+      },
       icon: Icon(Icons.arrow_back),
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return Text("Build results");
+    if (_cachedMovies.isEmpty) {
+      return Center(
+        child: Text("No se pudo encontrar la película"),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: _cachedMovies.length,
+      itemBuilder: (context, index) {
+        return _MovieItem(movie: _cachedMovies[index]);
+      },
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchMovies(query),
+    _onQueryChanged(query);
+
+    return StreamBuilder(
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
 
@@ -75,7 +114,7 @@ class _MovieItem extends StatelessWidget {
           spacing: 10,
           children: [
             SizedBox(
-              width: size.width * 0.25,
+              width: size.width * 0.2,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(movie.posterPath),
@@ -88,6 +127,10 @@ class _MovieItem extends StatelessWidget {
                 children: [
                   Text(
                     movie.title,
+                    style: textStyle.titleMedium,
+                  ),
+                  Text(
+                    movie.releaseDate,
                     style: textStyle.titleMedium,
                   ),
                   Row(
