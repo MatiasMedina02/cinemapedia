@@ -114,6 +114,7 @@ class _SlideState extends State<_Slide> {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
 
     return Skeletonizer(
       enabled: isLoading,
@@ -145,39 +146,37 @@ class _SlideState extends State<_Slide> {
                       return Container(
                         width: 150,
                         height: 200,
-                        color: Colors.grey.shade300,
+                        color: colors.primary,
                       );
                     },
                   ),
                 ),
               ),
-
-              // Title
-              SizedBox(
+              Container(
                 width: 150,
-                child: Text(
-                  widget.movie.title,
-                  style: textStyle.titleSmall,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              // Rating
-              SizedBox(
-                width: 150,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                padding: EdgeInsets.all(4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.star_half,
-                      color: Colors.yellow.shade800,
-                    ),
                     Text(
-                      HumanFormats.number(widget.movie.voteAverage),
-                      style: textStyle.bodyMedium?.copyWith(
-                        color: Colors.yellow.shade800,
-                      ),
+                      widget.movie.title,
+                      style: textStyle.titleSmall,
+                      maxLines: 2,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.star_half,
+                          color: Colors.yellow.shade800,
+                        ),
+                        Text(
+                          HumanFormats.number(widget.movie.voteAverage),
+                          style: textStyle.bodyMedium?.copyWith(
+                            color: Colors.yellow.shade800,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

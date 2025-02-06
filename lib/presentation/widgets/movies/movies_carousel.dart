@@ -86,9 +86,8 @@ class _Slide extends StatelessWidget {
         BoxShadow(
           color: colors.inversePrimary,
           blurRadius: 6.0,
-          offset: Offset(0, 4),
+          offset: Offset(0, 2),
           spreadRadius: 1.0,
-          // spreadRadius: 2.0,
         ),
       ],
     );

@@ -1,4 +1,3 @@
-import 'package:cinemapedia/presentation/widgets/shared/custom_appbar.dart';
 import 'package:cinemapedia/presentation/widgets/shared/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +9,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
       body: childView,
       bottomNavigationBar: CustomBottomNavigationBar(),
     );
