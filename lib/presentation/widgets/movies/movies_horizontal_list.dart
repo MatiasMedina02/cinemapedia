@@ -50,43 +50,41 @@ class _MoviesHorizontalListState extends State<MoviesHorizontalList> {
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
 
-    return SizedBox(
+    return Container(
       height: 350,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.title,
-                  style: textStyle.titleLarge,
-                ),
-                if (widget.subTitle.isNotEmpty)
-                  FilledButton.tonal(
-                    onPressed: () {},
-                    style: ButtonStyle(visualDensity: VisualDensity.compact),
-                    child: Text(
-                      widget.subTitle,
-                      style: textStyle.bodyMedium,
-                    ),
-                  )
-              ],
-            ),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemCount: widget.movies.length,
-                scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return _Slide(movie: widget.movies[index]);
-                },
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.title,
+                style: textStyle.titleLarge,
               ),
-            )
-          ],
-        ),
+              if (widget.subTitle.isNotEmpty)
+                FilledButton.tonal(
+                  onPressed: () {},
+                  style: ButtonStyle(visualDensity: VisualDensity.compact),
+                  child: Text(
+                    widget.subTitle,
+                    style: textStyle.bodyMedium,
+                  ),
+                )
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: widget.movies.length,
+              scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return _Slide(movie: widget.movies[index]);
+              },
+            ),
+          )
+        ],
       ),
     );
   }

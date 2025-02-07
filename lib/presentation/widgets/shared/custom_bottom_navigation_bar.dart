@@ -46,7 +46,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite),
-          label: "Favorite",
+          label: "Favorites",
         ),
       ],
     );

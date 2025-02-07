@@ -1,7 +1,9 @@
 import 'package:cinemapedia/domain/entities/actor.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/actors/actors_bymovie_provider.dart';
+import 'package:cinemapedia/presentation/providers/storage/favorite_movies_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_details_provider.dart';
+import 'package:cinemapedia/presentation/providers/storage/local_storage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,7 +55,11 @@ class _MovieView extends StatelessWidget {
     return SafeArea(
       child: CustomScrollView(
         slivers: [
-          _CustomAppBar(movie: movie, textStyle: textStyle, size: size),
+          _CustomAppBar(
+            movie: movie,
+            textStyle: textStyle,
+            size: size,
+          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => _MovieDetails(
@@ -70,7 +76,7 @@ class _MovieView extends StatelessWidget {
   }
 }
 
-class _CustomAppBar extends StatelessWidget {
+class _CustomAppBar extends ConsumerWidget {
   const _CustomAppBar({
     required this.movie,
     required this.textStyle,
@@ -82,13 +88,31 @@ class _CustomAppBar extends StatelessWidget {
   final Size size;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
     return SliverAppBar(
-      title: Text(
-        movie.title,
-        style: textStyle.titleLarge,
-      ),
+      // title: Text(
+      //   movie.title,
+      //   style: textStyle.titleLarge,
+      // ),
       expandedHeight: size.height * 0.7,
+      actions: [
+        IconButton(
+          onPressed: () {
+            ref.read(localStorageRepositoryProvider).toggleFavorite(movie);
+
+            ref.invalidate(isFavoriteProvider(movie.id));
+          },
+          icon: isFavoriteFuture.when(
+            data: (isFavorite) => isFavorite
+                ? Icon(Icons.favorite, color: Colors.red)
+                : Icon(Icons.favorite_border),
+            error: (_, __) => throw UnimplementedError(),
+            loading: () => CircularProgressIndicator(),
+          ),
+        )
+      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(children: [
           SizedBox.expand(
@@ -210,11 +234,12 @@ class _ActorsByMovie extends ConsumerWidget {
     }
 
     return SizedBox(
-      height: 250,
+      height: 275,
       child: ListView.builder(
         itemCount: actorsByMovie.length,
         scrollDirection: Axis.horizontal,
         physics: BouncingScrollPhysics(),
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           final actor = actorsByMovie[index];
 
@@ -226,17 +251,21 @@ class _ActorsByMovie extends ConsumerWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(actor.profilePath,
-                      height: 150, width: 100, fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress != null) {
-                      return Container(
-                        width: 150,
-                        color: Colors.grey.shade300,
-                      );
-                    }
-                    return child;
-                  }),
+                  child: Image.network(
+                    actor.profilePath,
+                    height: 150,
+                    width: 100,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress != null) {
+                        return Container(
+                          width: 150,
+                          color: Colors.grey.shade300,
+                        );
+                      }
+                      return child;
+                    },
+                  ),
                 ),
                 Text(
                   actor.name,
