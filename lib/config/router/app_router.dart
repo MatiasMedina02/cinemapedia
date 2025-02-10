@@ -22,7 +22,7 @@ final appRouter = GoRouter(
               GoRoute(
                 path: 'movie/:id',
                 builder: (context, state) {
-                  final movieId = state.pathParameters['id'] ?? 'not-found';
+                  final movieId = int.parse(state.pathParameters['id']!);
 
                   return MovieScreen(movieId: movieId);
                 },

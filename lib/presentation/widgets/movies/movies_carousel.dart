@@ -81,29 +81,14 @@ class _Slide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(20.0),
-      boxShadow: [
-        BoxShadow(
-          color: colors.inversePrimary,
-          blurRadius: 6.0,
-          offset: Offset(0, 2),
-          spreadRadius: 1.0,
-        ),
-      ],
-    );
-
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: decoration,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: CachedNetworkImage(
-            imageUrl: movie.backdropPath,
-            fit: BoxFit.cover,
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
+      padding: const EdgeInsets.all(10.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),
+        child: CachedNetworkImage(
+          imageUrl: movie.backdropPath,
+          fit: BoxFit.cover,
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
       ),
     );

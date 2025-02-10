@@ -1,13 +1,15 @@
-import 'package:cinemapedia/domain/entities/actor.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/actors/actors_bymovie_provider.dart';
+import 'package:cinemapedia/presentation/providers/movies/similar_movies_provider.dart.dart';
 import 'package:cinemapedia/presentation/providers/storage/favorite_movies_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_details_provider.dart';
+import 'package:cinemapedia/presentation/widgets/actors/actors_by_movie.dart';
+import 'package:cinemapedia/presentation/widgets/movies/similar_movies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
-  final String movieId;
+  final int movieId;
 
   const MovieScreen({super.key, required this.movieId});
 
@@ -22,6 +24,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 
     ref.read(movieDetailsProvider.notifier).loadMovie(widget.movieId);
     ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId);
+    ref.read(similarMoviesProvider.notifier).loadMovies(widget.movieId);
   }
 
   @override
@@ -91,10 +94,11 @@ class _CustomAppBar extends ConsumerWidget {
     final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
 
     return SliverAppBar(
-      // title: Text(
-      //   movie.title,
-      //   style: textStyle.titleLarge,
-      // ),
+      title: Text(
+        movie.title,
+        style: textStyle.titleLarge,
+      ),
+      centerTitle: true,
       expandedHeight: size.height * 0.7,
       actions: [
         IconButton(
@@ -164,12 +168,6 @@ class _MovieDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
-          // Title
-          Text(
-            movie.title,
-            style: textStyle.titleLarge,
-          ),
-
           // Genres
           Wrap(
             spacing: 4.0,
@@ -188,100 +186,54 @@ class _MovieDetails extends StatelessWidget {
             ).toList(),
           ),
 
-          // Actors
-          _ActorsByMovie(
-            movieId: movie.id.toString(),
-            textStyle: textStyle,
-          ),
-
-          // Description
+          // Story Line
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10.0,
             children: [
               Text(
-                "Description",
-                style: textStyle.titleLarge,
+                "Story Line",
+                style: textStyle.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Text(
                 movie.overview,
                 style: textStyle.bodyMedium,
               ),
             ],
+          ),
 
-            // TODO: More Like This
-          )
+          // Actors
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10.0,
+            children: [
+              Text(
+                "Cast and Crew",
+                style: textStyle.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ActorsByMovie(movieId: movie.id),
+            ],
+          ),
+
+          // More Like This
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10.0,
+            children: [
+              Text(
+                "More Like This",
+                style: textStyle.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SimilarMovies(movieId: movie.id),
+            ],
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class _ActorsByMovie extends ConsumerWidget {
-  final String movieId;
-  final TextTheme textStyle;
-
-  const _ActorsByMovie({
-    required this.movieId,
-    required this.textStyle,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final List<Actor>? actorsByMovie =
-        ref.watch(actorsByMovieProvider)[movieId];
-
-    if (actorsByMovie == null) {
-      return Center(child: CircularProgressIndicator());
-    }
-
-    return SizedBox(
-      height: 275,
-      child: ListView.builder(
-        itemCount: actorsByMovie.length,
-        scrollDirection: Axis.horizontal,
-        physics: BouncingScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final actor = actorsByMovie[index];
-
-          return SizedBox(
-            width: 125,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 4.0,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    actor.profilePath,
-                    height: 150,
-                    width: 100,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress != null) {
-                        return Container(
-                          width: 150,
-                          color: Colors.grey.shade300,
-                        );
-                      }
-                      return child;
-                    },
-                  ),
-                ),
-                Text(
-                  actor.name,
-                  style: textStyle.bodySmall,
-                ),
-                Text(
-                  actor.character ?? '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
       ),
     );
   }
