@@ -16,12 +16,11 @@ class SimilarMovies extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final List<Movie>? similarMovies =
         ref.watch(similarMoviesProvider)[movieId];
-    final size = MediaQuery.of(context).size;
 
     if (similarMovies == null) return Text("No Movies");
 
     return SizedBox(
-      height: size.height * 0.45,
+      height: 370,
       child: ListView.builder(
         itemCount: similarMovies.length,
         scrollDirection: Axis.horizontal,

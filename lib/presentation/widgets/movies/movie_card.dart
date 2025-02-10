@@ -7,7 +7,10 @@ import 'package:go_router/go_router.dart';
 class MovieCard extends StatelessWidget {
   final Movie movie;
 
-  const MovieCard({super.key, required this.movie});
+  const MovieCard({
+    super.key,
+    required this.movie,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class MovieCard extends StatelessWidget {
                 ),
                 child: SizedBox(
                   width: 175,
-                  height: 250,
+                  height: 225,
                   child: CachedNetworkImage(
                     imageUrl: movie.posterPath,
                     fit: BoxFit.cover,

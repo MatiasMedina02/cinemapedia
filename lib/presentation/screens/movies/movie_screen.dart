@@ -161,13 +161,17 @@ class _MovieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
+          FilledButton.icon(
+            onPressed: () {},
+            label: Text("Trailer"),
+            icon: Icon(Icons.play_arrow),
+          ),
           // Genres
           Wrap(
             spacing: 4.0,

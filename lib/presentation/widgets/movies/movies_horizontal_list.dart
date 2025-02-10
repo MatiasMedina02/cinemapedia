@@ -50,7 +50,7 @@ class _MoviesHorizontalListState extends State<MoviesHorizontalList> {
     final size = MediaQuery.of(context).size;
 
     return Container(
-      height: size.height * 0.55,
+      height: size.height * 0.5,
       padding: EdgeInsets.all(8.0),
       child: Column(
         children: [

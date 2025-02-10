@@ -1,6 +1,8 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/video.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_moviedb.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_videos_response.dart';
 
 class MovieMapper {
   static Movie movieDbToEntity(MovieFromMovieDb movieDb) => Movie(
@@ -43,5 +45,12 @@ class MovieMapper {
         video: movieDb.video,
         voteAverage: movieDb.voteAverage,
         voteCount: movieDb.voteCount,
+      );
+
+  static Video movieVideosToEntity(VideoFromDb movieDb) => Video(
+        id: movieDb.id,
+        name: movieDb.name,
+        youtubeKey: movieDb.key,
+        publishedAt: movieDb.publishedAt,
       );
 }
