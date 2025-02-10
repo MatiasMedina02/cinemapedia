@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
@@ -94,26 +95,16 @@ class _Slide extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Image.network(
-        movie.backdropPath,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress != null) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Container(
-                color: colors.primary,
-              ),
-            );
-          }
-          return Container(
-            decoration: decoration,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: child,
-            ),
-          );
-        },
+      child: Container(
+        decoration: decoration,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: CachedNetworkImage(
+            imageUrl: movie.backdropPath,
+            fit: BoxFit.cover,
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+        ),
       ),
     );
   }

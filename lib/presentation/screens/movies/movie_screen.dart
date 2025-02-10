@@ -3,7 +3,6 @@ import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/actors/actors_bymovie_provider.dart';
 import 'package:cinemapedia/presentation/providers/storage/favorite_movies_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_details_provider.dart';
-import 'package:cinemapedia/presentation/providers/storage/local_storage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -99,8 +98,10 @@ class _CustomAppBar extends ConsumerWidget {
       expandedHeight: size.height * 0.7,
       actions: [
         IconButton(
-          onPressed: () {
-            ref.read(localStorageRepositoryProvider).toggleFavorite(movie);
+          onPressed: () async {
+            await ref
+                .read(favoriteMoviesProvider.notifier)
+                .toggleFavorite(movie);
 
             ref.invalidate(isFavoriteProvider(movie.id));
           },

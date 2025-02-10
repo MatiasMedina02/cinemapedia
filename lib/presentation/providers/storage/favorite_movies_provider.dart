@@ -29,6 +29,18 @@ class FavoriteMoviesNotifier extends StateNotifier<List<Movie>> {
     final favoriteMovies = await localStorageRepository.loadFavoriteMovies();
     // page++;
 
-    state = favoriteMovies;
+    state = [...favoriteMovies];
+  }
+
+  Future<void> toggleFavorite(Movie movie) async {
+    await localStorageRepository.toggleFavorite(movie);
+    final bool isMovieInFavorites =
+        state.any((movieDb) => movieDb.id == movie.id);
+
+    if (isMovieInFavorites) {
+      state = state.where((movieDb) => movieDb.id != movie.id).toList();
+    } else {
+      state = [...state, movie];
+    }
   }
 }

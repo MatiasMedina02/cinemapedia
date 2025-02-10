@@ -24,7 +24,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
 
     if (favoriteMovies.isEmpty) {
       return Center(
-        child: CircularProgressIndicator(),
+        child: Text("There Is No Movie Yet!"),
       );
     }
 

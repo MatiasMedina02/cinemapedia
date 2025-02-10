@@ -60,6 +60,7 @@ class MovieListItem extends StatelessWidget {
                       ),
                     ],
                   ),
+                  // TODO: Add Favorite Button
                 ],
               ),
             ),
