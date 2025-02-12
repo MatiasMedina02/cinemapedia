@@ -1,9 +1,11 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/actors/actors_bymovie_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/similar_movies_provider.dart.dart';
+import 'package:cinemapedia/presentation/providers/movies/videos_from_movie.dart';
 import 'package:cinemapedia/presentation/providers/storage/favorite_movies_provider.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_details_provider.dart';
 import 'package:cinemapedia/presentation/widgets/actors/actors_by_movie.dart';
+import 'package:cinemapedia/presentation/widgets/movies/movie_trailer.dart';
 import 'package:cinemapedia/presentation/widgets/movies/similar_movies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +27,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     ref.read(movieDetailsProvider.notifier).loadMovie(widget.movieId);
     ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId);
     ref.read(similarMoviesProvider.notifier).loadMovies(widget.movieId);
+    ref.read(videoFromMovieProvider.notifier).loadTrailer(widget.movieId);
   }
 
   @override
@@ -114,7 +117,7 @@ class _CustomAppBar extends ConsumerWidget {
                 ? Icon(Icons.favorite, color: Colors.red)
                 : Icon(Icons.favorite_border),
             error: (_, __) => throw UnimplementedError(),
-            loading: () => CircularProgressIndicator(),
+            loading: () => Icon(Icons.favorite_border),
           ),
         )
       ],
@@ -167,11 +170,6 @@ class _MovieDetails extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
-          FilledButton.icon(
-            onPressed: () {},
-            label: Text("Trailer"),
-            icon: Icon(Icons.play_arrow),
-          ),
           // Genres
           Wrap(
             spacing: 4.0,
@@ -220,6 +218,21 @@ class _MovieDetails extends StatelessWidget {
                 ),
               ),
               ActorsByMovie(movieId: movie.id),
+            ],
+          ),
+
+          // Trailer
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10.0,
+            children: [
+              Text(
+                "Trailer",
+                style: textStyle.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              MovieTrailer(movieId: movie.id),
             ],
           ),
 

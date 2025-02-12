@@ -50,6 +50,8 @@ class MovieMapper {
   static Video movieVideosToEntity(VideoFromDb movieDb) => Video(
         id: movieDb.id,
         name: movieDb.name,
+        site: movieDb.site,
+        type: movieDb.type,
         youtubeKey: movieDb.key,
         publishedAt: movieDb.publishedAt,
       );

@@ -27,9 +27,9 @@ class VideoFromDb {
   final String key;
   final String site;
   final int size;
-  final Type type;
+  final String type;
   final bool official;
-  final DateTime publishedAt;
+  final String publishedAt;
   final String id;
 
   VideoFromDb({
