@@ -20,6 +20,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme;
     final favoriteMovies = ref.watch(favoriteMoviesProvider);
 
     if (favoriteMovies.isEmpty) {
@@ -29,11 +30,26 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
     }
 
     return SafeArea(
-      child: ListView.builder(
-          itemCount: favoriteMovies.length,
-          itemBuilder: (context, index) {
-            return MovieListItem(movie: favoriteMovies[index]);
-          }),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                "Wishlist",
+                style: textStyle.headlineSmall,
+              ),
+            ),
+            ListView.builder(
+                itemCount: favoriteMovies.length,
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return MovieListItem(movie: favoriteMovies[index]);
+                }),
+          ],
+        ),
+      ),
     );
   }
 }
