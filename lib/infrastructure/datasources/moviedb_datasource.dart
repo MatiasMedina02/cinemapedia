@@ -1,9 +1,11 @@
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
+import 'package:cinemapedia/domain/entities/genre.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/domain/entities/video.dart';
 import 'package:cinemapedia/infrastructure/helpers/dio.dart';
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_genres_response.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_videos_response.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
 
@@ -84,5 +86,36 @@ class MoviedbDatasource extends MoviesDatasource {
         .toList();
 
     return videos;
+  }
+
+  // Genres
+  @override
+  Future<List<Genre>> getMovieGenres() async {
+    final response = await dio.get('/genre/movie/list');
+
+    if (response.statusCode != 200) {
+      throw Exception('Movie Genres not found');
+    }
+
+    final movieDbResponse = MovieGenresResponse.fromJson(response.data);
+
+    final List<Genre> genres = movieDbResponse.genres
+        .map((genre) => MovieMapper.movieGenresToEntity(genre))
+        .toList();
+
+    return genres;
+  }
+
+  @override
+  Future<List<Movie>> filterByGenre(int genreId) async {
+    final response = await dio.get('/discover/movie', queryParameters: {
+      "with_genres": genreId,
+    });
+
+    if (response.statusCode != 200) {
+      throw Exception('Movie videos with genreId: $genreId not found');
+    }
+
+    return _jsonToMovies(response.data);
   }
 }

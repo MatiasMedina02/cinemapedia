@@ -1,9 +1,11 @@
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_genres_response.dart';
+
 class MovieDetails {
   final bool adult;
   final String backdropPath;
   final dynamic belongsToCollection;
   final int budget;
-  final List<Genre> genres;
+  final List<GenreFromDb> genres;
   final String homepage;
   final int id;
   final String imdbId;
@@ -60,7 +62,8 @@ class MovieDetails {
         backdropPath: json["backdrop_path"] ?? "",
         belongsToCollection: json["belongs_to_collection"],
         budget: json["budget"],
-        genres: List<Genre>.from(json["genres"].map((x) => Genre.fromJson(x))),
+        genres: List<GenreFromDb>.from(
+            json["genres"].map((x) => GenreFromDb.fromJson(x))),
         homepage: json["homepage"],
         id: json["id"],
         imdbId: json["imdb_id"],
@@ -119,26 +122,6 @@ class MovieDetails {
         "video": video,
         "vote_average": voteAverage,
         "vote_count": voteCount,
-      };
-}
-
-class Genre {
-  final int id;
-  final String name;
-
-  Genre({
-    required this.id,
-    required this.name,
-  });
-
-  factory Genre.fromJson(Map<String, dynamic> json) => Genre(
-        id: json["id"],
-        name: json["name"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
       };
 }
 

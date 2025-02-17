@@ -33,6 +33,14 @@ final appRouter = GoRouter(
           builder: (context, state) {
             return CategoriesView();
           },
+          // routes: [
+          // GoRoute(path: 'categories/:id',
+          // builder: (context, state) {
+          //   final categoryId = int.parse(state.pathParameters['id']!);
+
+          //       return MovieScreen(categoryId: categoryId);
+          // },)
+          // ]
         ),
         GoRoute(
           path: '/favorites',

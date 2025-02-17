@@ -1,6 +1,8 @@
+import 'package:cinemapedia/domain/entities/genre.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/domain/entities/video.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_genres_response.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_moviedb.dart';
 import 'package:cinemapedia/infrastructure/models/moviedb/movie_videos_response.dart';
 
@@ -54,5 +56,10 @@ class MovieMapper {
         type: movieDb.type,
         youtubeKey: movieDb.key,
         publishedAt: movieDb.publishedAt,
+      );
+
+  static Genre movieGenresToEntity(GenreFromDb genreDb) => Genre(
+        id: genreDb.id,
+        name: genreDb.name,
       );
 }
